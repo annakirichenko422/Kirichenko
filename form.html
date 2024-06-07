@@ -1,0 +1,65 @@
+<!DOCTYPE html>        
+<html lang="ru">        
+<head>        
+    <meta charset="UTF-8">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+    <title>Математический факультет ЧелГУ</title>        
+    <link rel="stylesheet" href="styles.css">        
+</head>        
+<body>        
+        
+    <div class="container">        
+        <div class="form-box">         
+            <div class="button-box">        
+                <div id="btn"></div>        
+                <button type="button" class="toggle-btn active" onclick="login()">Вход</button>        
+                <button type="button" class="toggle-btn" onclick="register()">Регистрация</button>        
+            </div>        
+            <form id="loginForm" class="input-group" style="display: block;" action="login.php" method="POST">        
+                <input type="text" name="email" class="input-field" placeholder="Email" required>        
+                <input type="password" name="password" class="input-field" placeholder="Пароль" required>        
+                <input type="checkbox" class="check-box"><span>Запомнить меня</span>        
+                <button type="submit" class="submit-btn">Войти</button>        
+            </form>        
+             <form id="registerForm" class="input-group" action="register.php" method="POST" onsubmit="return validatePassword()">       
+                <input type="text" class="input-field" id="email" name="email" placeholder="Email" required>       
+                <input type="password" class="input-field" id="password" name="password" placeholder="Пароль" required>       
+                <input type="password" class="input-field" id="confirmPassword" placeholder="Подтвердите пароль" required>       
+                <input type="checkbox" class="check-box"><span>Согласен с условиями</span>       
+                <button type="submit" class="submit-btn">Регистрация</button>       
+            </form>   
+        </div>        
+    </div>        
+        
+    <script>        
+        var x = document.getElementById("loginForm");        
+        var y = document.getElementById("registerForm");        
+        var z = document.getElementById("btn");        
+        
+        function register() {        
+            x.style.left = "-400px";        
+            y.style.left = "50px";        
+            z.style.left = "110px";        
+        }        
+        
+        function login() {        
+            x.style.left = "50px";        
+            y.style.left = "450px";        
+            z.style.left = "0px";        
+        }        
+     
+        function validatePassword() {     
+            var password = document.getElementById("password").value;     
+            var confirmPassword = document.getElementById("confirmPassword").value;     
+     
+            if (password !== confirmPassword) {     
+                alert("Пароли не совпадают!");     
+                return false;  
+            }     
+            return true;     
+        }     
+         
+    </script>        
+        
+</body>        
+</html>   

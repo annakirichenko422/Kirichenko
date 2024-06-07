@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отслеживание контрактов стипендиатов</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif; 
+            background-color: #f5f5f5; 
+        }
+
+        .container {
+            width: 95%;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px; 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+        }
+
+        h1 {
+            margin: 0 auto; 
+            width: fit-content; 
+            color: #b22222; 
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .logout-button {
+            background-color: transparent; 
+            color: #f44336; 
+            border: none; 
+            padding: 10px 20px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: color 0.3s; 
+            text-decoration: none; 
+        }
+
+        .logout-button:hover {
+            color: #d32f2f; 
+            text-decoration: underline; 
+        }
+
+        .save-button {
+            background-color: #f13f3f;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+
+        .save-button:hover {
+            background-color: #d33220;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th {
+            background: linear-gradient(45deg, #f13f3f, #ff6347); 
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            word-wrap: break-word;
+            vertical-align: top;
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .expired {
+            background-color: #ffcccc; 
+        }
+
+        input[type="text"], 
+        input[type="date"],
+        select {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px; 
+            width: calc(100% - 12px);
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+        }
+
+        .status-input {
+            width: 100px;
+            font-weight: bold;
+        }
+
+        .ending-soon {
+            background-color: #f3ff74; 
+        }
+
+        .expired {
+            background-color: #ff6565;
+        }
+
+        .add-button {
+            display: block;
+            width: 150px;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #f13f3f; 
+            color: white;
+            border: none;
+            border-radius: 20px; 
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+            transition: background-color 0.3s ease;
+        }
+
+        .add-button:hover {
+            background-color: #d33220; 
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 12px; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Отслеживание контрактов стипендиатов</h1> 
+            <button class="logout-button" onclick="logout()">Выйти</button> 
+        </div> 
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="5%">№</th>
+                        <th width="15%">ФИО</th>
+                        <th width="10%">Группа</th>
+                        <th width="10%">Финансирование</th>
+                        <th width="10%">Дата Рождения</th>
+                        <th width="10%">Гражданство</th>
+                        <th width="10%">Акад. Стипендия</th>
+                        <th width="10%">Льготы</th>
+                        <th width="10%">Дата начала выплаты</th>
+                        <th width="10%">Дата окончания назначения</th>
+                        <th width="10%">Приказ на стипендию</th>
+                        <th width="10%">Статус</th>
+                    </tr>
+                </thead>
+                
+                <tbody id="contractTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <button class="add-button" onclick="addContract()">Добавить контракт</button>
+        <button class="save-button" onclick="saveData()">Сохранить</button>         
+        <script>
+            function addContract() {
+                const tableBody = document.getElementById("contractTableBody");
+                const newRow = tableBody.insertRow();
+                const rowNumber = tableBody.rows.length;
+
+                newRow.innerHTML = `
+                    <td>${rowNumber}</td>
+                    <td width="12%"><input type="text" placeholder="ФИО"></td>
+                    <td width="10%">
+                        <select>
+                            <option value="">Выберите группу</option>
+                            <option value="МН-101">МН-101</option>
+                            <option value="МП-101">МП-101</option>
+                            <option value="МП-102">МП-102</option>
+                            <option value="МП-103">МП-103</option>
+                            <option value="МТ-101">МТ-101</option>
+                            <option value="МТ-102">МТ-102</option>
+                            <option value="МТ-103">МТ-103</option>
+                            <option value="МК-101">МК-101</option>
+                            <option value="МК-102">МК-102</option>
+                            <option value="МН-201">МН-201</option>
+                            <option value="МП-201">МП-201</option>
+                            <option value="МП-202">МП-202</option>
+                            <option value="МП-203">МП-203</option>
+                            <option value="МТ-201">МТ-201</option>
+                            <option value="МТ-202">МТ-202</option>
+                            <option value="МК-201">МК-201</option>
+                            <option value="МК-202">МК-202</option>
+                            <option value="МН-301">МН-301</option>
+                            <option value="МП-301">МП-301</option>
+                            <option value="МП-302">МП-302</option>
+                            <option value="МТ-301">МТ-301</option>
+                            <option value="МТ-302">МТ-302</option>
+                            <option value="МК-301">МК-301</option>
+                            <option value="МН-401">МН-401</option>
+                            <option value="МП-401">МП-401</option>
+                            <option value="МП-402">МП-402</option>
+                            <option value="МТ-401">МТ-401</option>
+                            <option value="МТ-402">МТ-402</option>
+                            <option value="МК-401">МК-401</option>
+                            <option value="МК-501">МК-501</option>
+                            <option value="МК-601">МК-601</option>
+                            <option value="ММмаг-101">ММмаг-101</option>
+                            <option value="МПмаг-101">МПмаг-101</option>
+                            <option value="МПмаг-102">МПмаг-102</option>
+                            <option value="МТмаг-101">МТмаг-101</option>
+                            <option value="ММмаг-201">ММмаг-201</option>
+                            <option value="МПмаг-201">МПмаг-201</option>
+                            <option value="МПмаг-202">МПмаг-202</option>
+                            <option value="МТмаг-201">МТмаг-201</option>
+                            <option value="Академ">Академ</option>
+                        </select>
+                    </td>
+                    <td width="10%">
+                        <select>
+                            <option value="">Выберите финансирование</option>
+                            <option value="Бюджет">Бюджет</option>
+                            <option value="Договор">Договор</option>
+                        </select>
+                    </td>
+                    <td width="10%"><input type="date" class="birth-date"></td>
+                    <td width="10%"><input type="text" placeholder="Гражданство"></td>
+                    <td width="10%">
+                        <select>
+                            <option value="">Выберите стипендию</option>
+                            <option value="ДА (ГАС)">ДА (ГАС)</option>
+                            <option value="ДА (ГАС, ГСС)">ДА (ГАС, ГСС)</option>
+                            <option value="ДА (ГАС, Президента)">ДА (ГАС, Президента)</option>
+                            <option value="ДА (ГАС, Правительства)">ДА (ГАС, Правительства)</option>
+                            <option value="ДА (ГСС)">ДА (ГСС)</option>
+                            <option value="НЕТ">НЕТ</option>
+                        </select>
+                    </td>
+                    <td width="10%">
+                        <select>
+                            <option value="">Выберите льготы</option>
+                            <option value="Сирота">Сирота</option>
+                            <option value="Инвалид I гр.">Инвалид I гр.</option>
+                            <option value="Инвалид II гр.">Инвалид II гр.</option>
+                            <option value="Инвалид III гр.">Инвалид III гр.</option>
+                            <option value="Ребенок-инвалид">Ребенок-инвалид</option>
+                            <option value="ГСП">ГСП</option>
+                        </select>
+                    </td>
+                    <td width="10%"><input type="date" class="start-date"></td>
+                    <td width="10%"><input type="date" class="end-date"></td>
+                    <td width="10%"><input type="text" placeholder="Приказ"></td>
+                    <td width="10%"><input type="text" class="status-input" readonly></td>
+                `;
+
+                const startDateInput = newRow.querySelector('.start-date');
+                const endDateInput = newRow.querySelector('.end-date');
+                const statusInput = newRow.querySelector('.status-input');
+
+                startDateInput.addEventListener('change', updateStatus);
+                endDateInput.addEventListener('change', updateStatus);
+
+                function updateStatus() {
+                    const startDate = new Date(startDateInput.value);
+                    const endDate = new Date(endDateInput.value);
+                    const today = new Date();
+                    const oneMonthBeforeEnd = new Date(endDate);
+                    oneMonthBeforeEnd.setMonth(oneMonthBeforeEnd.getMonth() - 1);
+
+                    if (today > endDate) {
+                        statusInput.value = "Просрочена";
+                        newRow.classList.remove('ending-soon');
+                        newRow.classList.add('expired');
+                    } else if (today >= oneMonthBeforeEnd) {
+                        statusInput.value = "Завершится скоро";
+                        newRow.classList.remove('expired');
+                        newRow.classList.add('ending-soon');
+                    } else if (today >= startDate && today <= endDate) {
+                        statusInput.value = "Действительна";
+                        newRow.classList.remove('expired', 'ending-soon');
+                    } else {
+                        statusInput.value = "Активна";
+                        newRow.classList.remove('expired', 'ending-soon');
+                    }
+                }
+            }
+
+            function logout() {
+                const tableBody = document.getElementById("contractTableBody");
+                const rows = tableBody.getElementsByTagName("tr");
+                let changesExist = false;
+
+                for (let i = 0; i < rows.length; i++) {
+                    const inputs = rows[i].getElementsByTagName("input");
+                    for (let j = 0; j < inputs.length; j++) {
+                        if (inputs[j].value !== "") {
+                            changesExist = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (changesExist) {
+                    window.location.href = "form.html"; 
+                    }
+                }
+
+            function saveData() {
+                const tableBody = document.getElementById("contractTableBody");
+                const rows = tableBody.getElementsByTagName("tr");
+                const data = [];
+
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName("td");
+                    const rowData = [];
+
+                    for (let j = 1; j < cells.length; j++) { 
+                        const cellValue = cells[j].querySelector("input, select").value;
+                        rowData.push(cellValue);
+                    }
+
+                    data.push(rowData);
+                }
+
+                fetch('save_data.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка сохранения данных');
+                    }
+                    return response.text(); 
+                })
+                .then(message => {
+                    console.log('Серверное сообщение:', message);
+                    alert(message); 
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert("Произошла ошибка при сохранении данных!");
+                });
+            }
+
+
+        </script>
+    </div>
+</body>
+</html>
